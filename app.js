@@ -1,11 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MongoStorePkg = require('connect-mongo');
 const MongoStore = MongoStorePkg.default || MongoStorePkg;
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 
-dotenv.config();
+
 
 if (process.env.NODE_ENV !== 'test') {
   const connectDB = require('./config/db');
