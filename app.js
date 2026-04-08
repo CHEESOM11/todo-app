@@ -24,7 +24,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: process.env.NODE_ENV === 'test' ? new session.MemoryStore() : MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+  cookie: { secure: false, httpOnly: true } // secure=true requires HTTPS, set to false for development/testing
 }));
 
 // Middleware to set user data in locals
