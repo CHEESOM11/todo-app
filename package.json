@@ -1,13 +1,14 @@
 {
   "name": "todo-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Node.js To-Do List App with User Authentication",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "jest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ofulue Chisom",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
