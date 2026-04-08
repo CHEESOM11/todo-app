@@ -21,13 +21,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  throw new Error('SESSION_SECRET is not defined in environment variables');
+}
+
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 app.use(session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   store: process.env.NODE_ENV === 'test' ? new session.MemoryStore() : MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-  cookie: { secure: false, httpOnly: true } // secure=true requires HTTPS, set to false for development/testing
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true, 
+    maxAge: 1000 * 60 * 60 * 1 // 1 hour
+  } // secure=true requires HTTPS, set to false for development/testing
 }));
 
 // Middleware to set user data in locals
