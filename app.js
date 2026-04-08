@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const session = require('express-session');
 const MongoStorePkg = require('connect-mongo');
@@ -19,8 +20,10 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+const sessionSecret = process.env.SESSION_SECRET;
+
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   store: process.env.NODE_ENV === 'test' ? new session.MemoryStore() : MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
@@ -52,4 +55,3 @@ if (process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
-
