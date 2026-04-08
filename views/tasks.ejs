@@ -1,0 +1,29 @@
+<h2>Your Tasks</h2>
+<form method="POST" action="/tasks/add">
+  <input type="text" name="description" placeholder="New task" required />
+  <button type="submit">Add</button>
+</form>
+
+<div>
+  <a href="/tasks?status=pending">Pending</a>
+  <a href="/tasks?status=completed">Completed</a>
+  <a href="/auth/logout">Logout</a>
+</div>
+
+<ul>
+  <% tasks.forEach(task => { %>
+    <li>
+      <%= task.description %> - <%= task.status %>
+      <% if (task.status !== 'deleted') { %>
+        <form method="POST" action="/tasks/update/<%= task._id %>">
+          <% if (task.status === 'pending') { %>
+            <button name="status" value="completed">Complete</button>
+          <% } else if (task.status === 'completed') { %>
+            <button name="status" value="pending">Re-Open</button>
+          <% } %>
+          <button name="status" value="deleted">Delete</button>
+        </form>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>

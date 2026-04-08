@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b434d;
+      color: #333;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: 2.2rem;
+    }
+    p {
+      margin: 0 0 24px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      color: #fff;
+      background: #2f80ed;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .button.secondary {
+      background: #4f4f4f;
+    }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(47, 128, 237, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <h1>Welcome to Your Todo App</h1>
+      <p>Track tasks, mark them complete, and manage your todo list with a simple authentication flow.</p>
+      <div class="buttons">
+        <a class="button" href="/auth/login">Login</a>
+        <a class="button secondary" href="/auth/register">Register</a>
+        <a class="button" href="/tasks">View Tasks</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
