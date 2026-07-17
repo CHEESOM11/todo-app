@@ -1,5 +1,8 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+
 const User = require('../models/User');
 
 const router = express.Router();
@@ -10,19 +13,29 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  
   try {
-    const userExists = await User.findOne({ username });
-    if (userExists) {
-      return res.render('register', { error: 'Username already exists' });
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.render('register', { error: 'Please fill in all fields' });
     }
-    const newUser = new User({ username, password });
-    await newUser.save();
-    req.session.userId = newUser._id;
-    res.redirect('/tasks');
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).render('register', { error: 'Username or email already exists' });
+    }
+    const user = await User.create({ username, email, password });
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' }
+    );
+    res.status(201).json({
+      message: 'User registered successfully',
+      token,
+      user
+    });
   } catch (err) {
     console.error(err);
-    res.render('register', { error: 'Error registering user' });
+    res.status(500).json({ error: 'Error registering user' });
   }
 });
 
@@ -32,27 +45,30 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+ 
   try {
+    const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user) {
-      return res.render('login', { error: 'Invalid credentials' });
+      return res.status(401).render('login', { error: 'Invalid credentials' });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.render('login', { error: 'Invalid credentials' });
+      return res.status(401).render('login', { error: 'Invalid credentials' });
     }
-    req.session.userId = user._id;
-    res.redirect('/tasks');
+    const token = jwt.sign(
+      { id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' }
+    );
+    res.status(200).json({message: "Login successful", token, user});
   } catch (err) {
     console.error(err);
-    res.render('login', { error: 'Error logging in' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Logout
 router.get('/logout', (req, res) => {
-  req.session.destroy();
+  res.json({ message: 'Logged out successfully' });
   res.redirect('/auth/login');
 });
 
